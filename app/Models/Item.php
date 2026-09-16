@@ -14,12 +14,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Item extends Model
 {
+    // Primary Key config
+    protected $primaryKey = 'blizzard_id';
+    protected $keyType = 'int';
     public $incrementing = false;
 
-    protected $primaryKey = 'blizzard_id';
-
-    protected $keyType = 'int';
-
+    // Basic columns on the table
     protected $fillable = [
         'blizzard_id',
         'name',
@@ -36,24 +36,35 @@ final class Item extends Model
         'required_level',
     ];
 
-    /**
-     * The subclass enum case for this item, resolved via its item class.
-     */
+    // Sensitive columns on the table
+    protected $hidden = [];
+
+    // Defines how an attribute is computed when accessed via $model->subclass.
     public function getSubclassAttribute(): BackedEnum
     {
         return $this->class_id->resolveSubclass($this->subclass_id);
     }
 
+    // Eloquent relationships
     public function tsmItemSnapshot(): HasMany
     {
-        return $this->hasMany(TsmItemSnapshot::class, 'item_id', 'blizzard_id');
+        return $this->hasMany(
+            TsmItemSnapshot::class,
+            'item_id',
+            'blizzard_id'
+        );
     }
 
     public function farmingMethodItems(): HasMany
     {
-        return $this->hasMany(FarmingMethodItem::class, 'item_id', 'blizzard_id');
+        return $this->hasMany(
+            FarmingMethodItem::class,
+            'item_id',
+            'blizzard_id'
+        );
     }
 
+    // Defines the data types used when interacting with the DB
     protected function casts(): array
     {
         return [

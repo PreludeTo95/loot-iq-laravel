@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedTinyInteger('region_id')->nullable()->after('updated_at');
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->foreignId('region_id')->constrained();
         });
     }
 
@@ -23,8 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('region_id');
-        });
+        Schema::dropIfExists('users');
     }
 };
